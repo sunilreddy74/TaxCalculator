@@ -40,9 +40,9 @@ namespace TaxCalculatorTest
         [Test]
         [TestCase("Invalid")]
         [TestCase("")]
-        public void TaxCalculator_Sales_ExpectedBehavior_Invalid(string area)
+        public void Read_DataSource_ExpectedBehavior_Exception(string area)
         {
-            //Assert.Throws<InvalidDataException>(() => _service.CalculateTax(area, 0m));
+            Assert.Throws<ArgumentException>(() => _dataSource.GetTaxPercentage(area));
         }
     }
 }
