@@ -18,18 +18,11 @@ namespace TaxCalculator.Controllers
         }
 
         [HttpGet]
-        [Route("sales/{area}/{amount}")]
-        public ActionResult GetSalesTax(string area, decimal amount)
+        [Route("sales")]
+        public ActionResult GetSalesTax([FromQuery]TaxRequest request)
         {
-            try
-            {
-                var tax = this.calculator.GetTaxTypeService<SalesTaxService>().CalculateTax(area, amount);
-                return new OkObjectResult(new TaxResponse { ServiceArea = area, Amount = amount, Tax = tax });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var tax = this.calculator.GetTaxTypeService<SalesTaxService>().CalculateTax(request.Area, request.Amount);
+            return new OkObjectResult(new TaxResponse { ServiceArea = request.Area, Amount = request.Amount, Tax = tax });
         }
     }
 }

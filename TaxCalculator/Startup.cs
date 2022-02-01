@@ -7,8 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +20,7 @@ namespace TaxCalculator
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/NLog.config"));
             Configuration = configuration;
         }
 
@@ -27,6 +30,7 @@ namespace TaxCalculator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<ILoggerManager, LoggerManager>();
             services.AddScoped<CalculatorServiceResolver>();
             services.AddScoped<SalesTaxService>()
                 .AddScoped<ITaxCalculatorService, SalesTaxService>(s => s.GetService<SalesTaxService>());
@@ -41,6 +45,8 @@ namespace TaxCalculator
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseExceptionMiddleware();
 
             app.UseHttpsRedirection();
 
